@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: project-portfolio-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/project_portfolio}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
