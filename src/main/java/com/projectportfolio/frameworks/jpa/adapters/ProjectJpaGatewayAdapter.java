@@ -49,12 +49,20 @@ public class ProjectJpaGatewayAdapter implements ProjectGatewayPort {
 
     @Override
     public Page<Project> findAll(String nameFilter, ProjectStatus statusFilter, Pageable pageable) {
+        String normalizedName = (nameFilter == null || nameFilter.isBlank())
+                ? null
+                : nameFilter.trim().toLowerCase();
+
         Page<Project> page = repository.findAll(pageable).map(this::toDomain);
+
         List<Project> filtered = page.getContent().stream()
-                .filter(p -> nameFilter == null || p.getName().toLowerCase().contains(nameFilter.toLowerCase()))
-                .filter(p -> statusFilter == null || p.getStatus() == statusFilter)
+                .filter(project -> normalizedName == null
+                        || project.getName().toLowerCase().contains(normalizedName))
+                .filter(project -> statusFilter == null
+                        || project.getStatus() == statusFilter)
                 .toList();
-        return new PageImpl<>(filtered, pageable, page.getTotalElements());
+
+        return new PageImpl<>(filtered, pageable, filtered.size());
     }
 
     @Override
